@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.4.1.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.themrah.sample</groupId>
+    <artifactId>oauth2-poc-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Oauth2 Poc Parent</name>
+
+    <modules>
+        <module>api-gateway</module>
+        <module>oauth2-resource-server</module>
+        <module>oauth2-bff</module>
+        <module>resource-service</module>
+    </modules>
+
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Libraries -->
+        <commons-io.version>2.5</commons-io.version>
+        <dozer.version>5.5.1</dozer.version>
+        <guava.version>19.0</guava.version>
+        <hazelcast.version>3.7.1</hazelcast.version>
+        <swagger-springmvc.version>1.0.2</swagger-springmvc.version>
+        <lombok.version>1.16.10</lombok.version>
+
+        <!-- Database Drivers & Testing Tools -->
+        <oracle11g-java-driver.version>11.2.0.4.0</oracle11g-java-driver.version>
+        <oracle12c-java-driver.version>12.1.0.2.0</oracle12c-java-driver.version>
+        <postgresql.version>9.4.1211</postgresql.version>
+        <!--<edb-java-driver.version>1.7.0</edb-java-driver.version> -->
+        <dbunit.version>2.5.3</dbunit.version>
+        <spring-test-dbunit.version>1.3.0</spring-test-dbunit.version>
+
+        <spring-cloud-starter-zuul.version>1.2.3.RELEASE</spring-cloud-starter-zuul.version>
+        <spring-boot-starter.version>1.4.1.RELEASE</spring-boot-starter.version>
+
+        <!-- Plugin Versions -->
+        <build-helper-maven-plugin.version>1.12</build-helper-maven-plugin.version>
+        <docker-maven-plugin.version>0.16.5</docker-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.7.7.201606060606</jacoco-maven-plugin.version>
+        <maven-jaxb2-plugin.version>0.13.1</maven-jaxb2-plugin.version>
+        <maven-failsafe-plugin.version>2.19.1</maven-failsafe-plugin.version>
+        <maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+
+        <!-- Docker Properties -->
+        <docker.themrah.from>themrah/server-jre8:latest</docker.themrah.from>
+        <docker.themrah.image>themrah/${project.artifactId}</docker.themrah.image>
+        <docker.themrah.assemblyDescriptorRef>artifact</docker.themrah.assemblyDescriptorRef>
+        <docker.themrah.basedir>/opt/themrah/jar</docker.themrah.basedir>
+        <docker.themrah.env.JARFILE>${project.artifactId}-${project.version}.${project.packaging}
+        </docker.themrah.env.JARFILE>
+
+        <!-- Proxy settings for docker build -->
+        <docker.all_proxy/>
+        <docker.buildArg.http_proxy>${docker.all_proxy}</docker.buildArg.http_proxy>
+        <docker.buildArg.https_proxy>${docker.all_proxy}</docker.buildArg.https_proxy>
+        <docker.buildArg.ftp_proxy>${docker.all_proxy}</docker.buildArg.ftp_proxy>
+        <docker.buildArg.HTTP_PROXY>${docker.all_proxy}</docker.buildArg.HTTP_PROXY>
+        <docker.buildArg.HTTPS_PROXY>${docker.all_proxy}</docker.buildArg.HTTPS_PROXY>
+        <docker.buildArg.FTP_PROXY>${docker.all_proxy}</docker.buildArg.FTP_PROXY>
+        <docker.buildArg.no_proxy>localhost</docker.buildArg.no_proxy>
+        <docker.buildArg.NO_PROXY>localhost</docker.buildArg.NO_PROXY>
+
+        <!-- Test && Integration Test Configurations -->
+        <integration.source.directory>src/it/java</integration.source.directory>
+        <integration.resource.directory>src/it/resources</integration.resource.directory>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-web</artifactId>
+                <version>4.3.3.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+            </dependency>
+
+            <!-- cloud-starter -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-zuul</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-tomcat</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${spring-cloud-starter-zuul.version}</version>
+            </dependency>
+
+            <!-- rest-service-starter -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-tomcat</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-undertow</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.mangofactory</groupId>
+                <artifactId>swagger-springmvc</artifactId>
+            </dependency>
+
+            <!-- oauth starter -->
+            <dependency>
+                <groupId>org.springframework.security.oauth</groupId>
+                <artifactId>spring-security-oauth</artifactId>
+                <version>2.0.9.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-configuration-processor</artifactId>
+                <version>${spring-boot-starter.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-autoconfigure</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-test</artifactId>
+                <version>4.0.3.RELEASE</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.sf.dozer</groupId>
+                <artifactId>dozer</artifactId>
+                <version>${dozer.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast-client</artifactId>
+                <version>${hazelcast.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.mangofactory</groupId>
+                <artifactId>swagger-springmvc</artifactId>
+                <version>${swagger-springmvc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${oracle11g-java-driver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.oracle</groupId>
+                <artifactId>ojdbc7</artifactId>
+                <version>${oracle12c-java-driver.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.dbunit</groupId>
+                <artifactId>dbunit</artifactId>
+                <version>${dbunit.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.github.springtestdbunit</groupId>
+                <artifactId>spring-test-dbunit</artifactId>
+                <version>${spring-test-dbunit.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jvnet.jaxb2.maven2</groupId>
+                    <artifactId>maven-jaxb2-plugin</artifactId>
+                    <version>${maven-jaxb2-plugin.version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                    <configuration>
+                        <images>
+                            <image>
+                                <name>${docker.themrah.image}</name>
+                                <build>
+                                    <from>${docker.themrah.from}</from>
+                                    <assembly>
+                                        <basedir>${docker.themrah.basedir}</basedir>
+                                        <descriptorRef>${docker.themrah.assemblyDescriptorRef}</descriptorRef>
+                                    </assembly>
+                                    <tags>
+                                        <tag>${project.version}</tag>
+                                        <tag>latest</tag>
+                                    </tags>
+                                    <env>
+                                        <JARFILE>${docker.themrah.env.JARFILE}</JARFILE>
+                                    </env>
+                                </build>
+                            </image>
+                        </images>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>**/*.yml</include>
+                </includes>
+            </resource>
+
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.jks</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+</project>

@@ -1,0 +1,31 @@
+ribbon:
+  eureka:
+    enabled: false
+eureka:
+  client:
+    enabled: false
+server:
+  port: 8081
+
+security:
+  ignored: /**
+zuul:
+  routes:
+    coupons:
+      path: /users/iddaa/coupons/**
+      url: http://localhost:8082/resources
+    events:
+      path: /iddaa/events/**
+      url: http://localhost:8082/events
+    sessions:
+      path: /sessions
+      url: http://localhost:8084/sessions
+  sensitive-headers: Cookie,Set-Cookie
+
+themrah:
+  security:
+   secure-resources:
+    - resources
+    - finance
+
+
