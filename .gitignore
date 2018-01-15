@@ -1,0 +1,17 @@
+*.svn
+*.class
+*.log
+
+# MacOSX
+.DS_Store
+
+# intellij idea
+.idea*
+*.iml
+
+.cache/
+.history/
+.lib/
+dist/*
+target/
+
